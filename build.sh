@@ -1,15 +1,12 @@
-#!/usr/bin/env bash
+#!/user/bin/env bash
 # Exit immediately if any command fails
 set -o errexit
 
-echo "Installing dependencies..."
-pip install --upgrade pip
+#Install all Python dependecies
 pip install -r requirements.txt
 
-echo "Collecting static files..."
-python manage.py collectstatic --noinput
+#Collect static files (CSS, JavaScript, Images)
+python manage.py collectstatic --no-input
 
-echo "Applying migrations..."
+#Run database migrations
 python manage.py migrate
-
-echo "Build completed successfully!"
