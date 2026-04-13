@@ -1,0 +1,259 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}HealthCare Portal{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}" />
+    <style>
+      :root {
+        --primary-color: #0d6efd;
+        --sidebar-bg: #1a2634;
+        --sidebar-width: 260px;
+        --topbar-height: 70px;
+      }
+      body {
+        background: #f4f7f6;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: #334155;
+      }
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: var(--sidebar-width);
+        background: var(--sidebar-bg);
+        z-index: 1050;
+        overflow-y: auto;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+      }
+      .sidebar-brand {
+        padding: 24px;
+        background: var(--primary-color);
+        color: white;
+        font-size: 1.25rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .sidebar-brand i { font-size: 1.5rem; }
+      .nav-section {
+        padding: 20px 24px 8px;
+        font-size: 0.75rem;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+      }
+      .sidebar .nav-link {
+        color: #94a3b8;
+        padding: 12px 24px;
+        margin: 4px 12px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        text-decoration: none;
+      }
+      .sidebar .nav-link:hover {
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+      }
+      .sidebar .nav-link.active {
+        background: var(--primary-color);
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+      }
+      .sidebar .nav-link i {
+        width: 20px;
+        text-align: center;
+        font-size: 1.1rem;
+      }
+      .main-content {
+        margin-left: var(--sidebar-width);
+        min-height: 100vh;
+        transition: all 0.3s;
+      }
+      .topbar {
+        background: #fff;
+        height: var(--topbar-height);
+        padding: 0 32px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      .topbar-title {
+        font-weight: 700;
+        color: #1e293b;
+        font-size: 1.25rem;
+      }
+      .page-content { padding: 32px; }
+      .card {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s;
+      }
+      .stat-card {
+        border-radius: 16px;
+        padding: 24px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+      }
+      .stat-card .stat-value {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 2px;
+        line-height: 1;
+      }
+      .stat-card .stat-label {
+        font-size: 1rem;
+        font-weight: 500;
+        opacity: 0.9;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .stat-icon {
+        font-size: 2.5rem;
+        opacity: 0.8;
+      }
+      .user-badge {
+        background: #f1f5f9;
+        padding: 6px 16px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+        color: #475569;
+        font-size: 0.9rem;
+      }
+      .user-badge i { color: var(--primary-color); }
+      
+      /* Mobile Responsiveness */
+      @media (max-width: 992px) {
+        .sidebar { transform: translateX(-100%); }
+        .sidebar.active { transform: translateX(0); }
+        .main-content { margin-left: 0; }
+        .topbar { padding: 0 16px; }
+      }
+    </style>
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    {% if user.is_authenticated %}
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <i class="fas fa-heartbeat"></i>
+        <span>HealthCare</span>
+      </div>
+      <nav class="mt-2 pb-5">
+        <div class="nav-section">Main Console</div>
+        <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+          <i class="fas fa-tachometer-alt"></i> Dashboard
+        </a>
+        
+        <div class="nav-section">Patient Care</div>
+        <a href="{% url 'patient_list' %}" class="nav-link {% if request.resolver_match.url_name == 'patient_list' %}active{% endif %}">
+          <i class="fas fa-hospital-user"></i> Patient Directory
+        </a>
+        <a href="{% url 'patient_create' %}" class="nav-link {% if request.resolver_match.url_name == 'patient_create' %}active{% endif %}">
+          <i class="fas fa-user-plus"></i> Register Patient
+        </a>
+        
+        <div class="nav-section">Medical Staff</div>
+        <a href="{% url 'doctor_list' %}" class="nav-link {% if request.resolver_match.url_name == 'doctor_list' %}active{% endif %}">
+          <i class="fas fa-user-md"></i> Doctor Directory
+        </a>
+        <a href="{% url 'specialization_list' %}" class="nav-link {% if 'specialization' in request.resolver_match.url_name %}active{% endif %}">
+          <i class="fas fa-stethoscope"></i> Specializations
+        </a>
+        
+        <div class="nav-section">Operations</div>
+        <a href="{% url 'appointment_list' %}" class="nav-link {% if request.resolver_match.url_name == 'appointment_list' %}active{% endif %}">
+          <i class="fas fa-calendar-check"></i> Appointments
+        </a>
+        <a href="{% url 'today_appointments' %}" class="nav-link {% if request.resolver_match.url_name == 'today_appointments' %}active{% endif %}">
+          <i class="fas fa-clock"></i> Today's List
+        </a>
+        
+        <div class="nav-section">Pharmacy</div>
+        <a href="{% url 'pharmacy_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'pharmacy_dashboard' %}active{% endif %}">
+          <i class="fas fa-chart-pie"></i> Dashboard
+        </a>
+        <a href="{% url 'medicine_list' %}" class="nav-link {% if request.resolver_match.url_name == 'medicine_list' %}active{% endif %}">
+          <i class="fas fa-pills"></i> Medicine Stock
+        </a>
+        <a href="{% url 'dispense_medicine' %}" class="nav-link {% if request.resolver_match.url_name == 'dispense_medicine' %}active{% endif %}">
+          <i class="fas fa-prescription-bottle"></i> Dispense
+        </a>
+        
+        <div class="nav-section">User Account</div>
+        <a href="{% url 'profile' %}" class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+          <i class="fas fa-user-circle"></i> My Profile
+        </a>
+        <a href="{% url 'logout' %}" class="nav-link text-danger mt-3">
+          <i class="fas fa-sign-out-alt"></i> Sign Out
+        </a>
+      </nav>
+    </div>
+
+    <div class="main-content">
+      <div class="topbar">
+        <div class="d-flex align-items-center">
+            <button class="btn d-lg-none me-3" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <span class="topbar-title">{% block page_title %}HealthCare Portal{% endblock %}</span>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+          <div class="user-badge shadow-sm">
+            <i class="fas fa-user-shield"></i>
+            <span>{{ user.get_full_name|default:user.username }}</span>
+          </div>
+          <a href="{% url 'logout' %}" class="btn btn-sm btn-danger rounded-circle p-2 shadow-sm" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+            <i class="fas fa-power-off"></i>
+          </a>
+        </div>
+      </div>
+      
+      <div class="page-content">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags %}{{ message.tags }}{% else %}info{% endif %} alert-dismissible fade show shadow-sm border-0 mb-4" role="alert">
+                    <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} me-2"></i>
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+    {% else %}
+        {% block public_content %}{% endblock %}
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+        }
+    </script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>
