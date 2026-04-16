@@ -33,7 +33,7 @@
     </div>
 </div>
 
-<div class="card shadow-sm border-0 overflow-hidden">
+<div class="card shadow-sm border-0">
     <div class="card-header bg-white py-3 border-0 d-flex align-items-center">
         <i class="fas fa-users text-primary me-2"></i>
         <h6 class="mb-0 fw-bold">Patient Directory</h6>
@@ -166,12 +166,14 @@
     .action-btn:hover {
         transform: translateY(-2px);
     }
-    /* Ensure dropdown is visible even with table-responsive */
+    /* Scrollable table box on mobile */
     .table-responsive {
-        overflow: visible !important;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
-    .card.overflow-hidden {
-        overflow: visible !important;
+    @media (max-width: 767px) {
+        .card-body.p-4 { padding: 12px !important; }
+        .input-group .btn { padding: 6px 12px; font-size: 0.85rem; }
     }
 </style>
 {% endblock %}
